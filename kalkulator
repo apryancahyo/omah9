@@ -1,0 +1,758 @@
+<div id="content" class="site-content">
+    <div id="content-inside" class="container right-sidebar">
+        <div id="primary" class="content-area">
+            <main id="main" class="site-main" role="main">
+
+                    
+                        
+<article id="post-4453" class="post-4453 page type-page status-publish has-post-thumbnail hentry">
+<header class="entry-header"></header><!-- .entry-header -->
+<div class="entry-content">
+        
+<h3>Simulasi berikut hanya prakiraan bukan perhitungan sebenarnya.</h3>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.css" integrity="sha512-iVAPZRCMdOOiZWYKdeY78tlHFUKf/PqAJEf/0bfnkxJ8MHQHqNXB/wK2y6RH/LmoQ0avRlGphSn06IMMxSW+xw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2-bootstrap.min.css" integrity="sha512-eNfdYTp1nlHTSXvQD4vfpGnJdEibiBbCmaXHQyizI93wUnbCZTlrs1bUhD7pVnFtKRChncH5lpodpXrLpEdPfQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js" integrity="sha512-jfp1Gv+A3dHho9qOUUWOrZA6NWR08j7GYVn8VXcRI0FsDb3xe0hQHVwasi2UarjZzPYOxT5uvmlHrWLXQ+M4AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style type="text/css">
+body{
+    padding: 1rem;
+}
+select:not([multiple]) {
+    -webkit-appearance: menulist;
+    -ms-appearance: menulist;
+    -moz-appearance: menulist;
+    appearance: menulist;
+    background-image: none;
+}
+.container {
+   width: 100%;
+   min-height: 600px;
+}
+
+#table-simulasi input{
+    display: inline;
+}
+
+#no-data-ruangan{
+    text-align: center;
+    padding: 20px;
+}
+
+input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], textarea {
+    padding: 0.625em 0.75em;
+    max-width: 100%;
+}
+
+.modal {
+z-index: 2000;
+}
+</style>
+
+<script type="text/javascript">
+
+/* -----------------------------------*/
+/* ------------SETTING ---------------*/
+
+const listruang = [
+    'Ruang Tamu',
+    'Ruang Keluarga',
+    'Ruang Makan',
+    'Dapur Bersih',
+    'Dapur Kotor',
+    'Kamar Tidur Utama + Kamar Mandi Dalam',
+    'Kamar Tidur 2 + Kamar Mandi Dalam',
+    'Kamar Tidur 1',
+    'Kamar Tidur 2',
+    'Kamar Tidur 3',
+    'Kamar Tidur 4',
+    'Kamar Mandi 1',
+    'Kamar Mandi 2',
+    'Kamar Mandi 3',
+    'Kamar Mandi 4',
+    'Walk In Closet 1',
+    'Carport',
+    'Garasi',
+    'Gudang',
+    'Kamar Pembantu',
+];
+
+
+const max_lantai = 4;
+const persen_kdb = 70;
+const persen_sirkulasi = 30;
+
+const biaya_desain_permeter = 150; //ribu
+const biaya_desain_minim = 3600; //ribu
+const desain_minim = 36; //meter
+
+const biaya_bangun_s_permeter = 3000; //ribu
+const biaya_bangun_m_permeter = 4800; //ribu
+const biaya_bangun_w_permeter = 5500; //ribu
+
+
+</script>
+<div class="container">    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">LUAS TANAH</div>
+        </div>  
+        <div class="panel-body">
+            <form class="form-horizontal" method="post" action="." name="autoSumForm">
+                <div class="form-group">
+                    <label for="panjang-tanah" class="col-sm-3 control-label">Panjang</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="panjang-tanah" placeholder="Panjang tanah" onkeyup="hitung_luas_tanah();">
+                            <span class="input-group-addon">m</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lebar-tanah" class="col-sm-3 control-label">Lebar</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="lebar-tanah" placeholder="Lebar tanah" onkeyup="hitung_luas_tanah();">
+                            <span class="input-group-addon">m</span>
+                        </div>
+                    </div>
+                </div>
+              
+                <div class="form-group">
+                    <label for="lebar-tanah" class="col-sm-3 control-label">Jumlah Lantai</label>
+                    <div class="col-sm-4">
+                        <select class="form-control select2" id="jumlah-lantai" onchange="set_dropdown_lantai()">
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+<div class="">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">Simulasi Hitung Biaya Bangunan</div>
+        </div>  
+        <div class="panel-body">
+            <button type="button" class="btn btn-default btn-sm" style="margin-bottom:10px;" onclick="add_ruang()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Tambah Ruangan
+            </button>
+            <div class="table-responsive">
+                <table id="table-simulasi" class="table table-striped">
+                    <thead>
+                        <tr class="default">
+                            <th>Nama Ruangan</th>
+                            <th width="150px">Lantai</th>
+                            <th width="150px">Ukuran Ruang <br>(P x L)</th>
+                            <th width="100px">Luas</th>
+                            <th width="150px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" id="no-data-ruangan">
+                                TIDAK ADA DATA RUANGAN. SILAKAN TAMBAHKAN RUANGAN
+                            </td>                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <table class="table">
+                <tbody style="font-weight: bold;">
+                    
+                    <tr>
+                        <td class="text-right">TOTAL LUAS TANAH </td>
+                        <td style="width:150px"><span id="luas-tanah">0</span> m<sup>2</sup></td>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><strong>TOTAL LUAS BANGUNAN REKOMENDASI (KDB <span id="kdb"></span>%)</strong> </td>
+                        <td><span id="luas-max">0</span> m<sup>2</sup></td>
+                    </tr>
+                   
+                </tbody>
+            </table>
+
+            <div id="alert-error" class="alert alert-warning alert-dismissible" role="alert" style="display:none;">
+                <strong>Perhatian !</strong><br> 
+                <div id="error-message"></div>
+            </div>
+            
+
+            <table class="table">
+                <tbody>
+                    <tr style="font-weight: bold;">
+                        <td class="text-right">TOTAL LUAS BANGUNAN (RUANGAN + SIRKULASI) </td>
+                        <td style="width:150px"><span class="luas-total">0</span> m<sup>2</sup></td>
+                    </tr>
+                    <tr id="tr-luas-ruangan">
+                        <td class="text-right">PERHITUNGAN LUAS RUANGAN</td>
+                        <td><span id="luas-ruangan">0</span> m<sup>2</sup></td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">SIRKULASI <span id="sirkulasi">0</span> %</td>
+                        <td><span id="luas-sirkulasi">0</span> m<sup>2</sup></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table class="table">
+                <tbody>  
+                    <tr>
+                        <td class="text-right"><strong>BIAYA DESIGN</strong></td>
+                        <td style="width:150px"> Rp. <span id="biaya-design">0</span>,-</td>
+                    </tr>
+                    <tr style="background-color:#fff5ba">
+                        <td  class="text-right"><strong>PERKIRAAN BIAYA BANGUN (SEDERHANA)</strong></td>
+                        <td> Rp. <span id="biaya-bangun-s">0</span>,-</td>
+                    </tr>
+                    <tr style="background-color:#fff5ba">
+                        <td class="text-right"><strong>PERKIRAAN BIAYA BANGUN (SEDERHANA) + DESIGN</strong></td>
+                        <td> Rp. <span id="biaya-bangun-s-design">0</span>,-</td>
+                    </tr>
+                    <tr style="background-color:#ace7ff">
+                        <td class="text-right"><strong>PERKIRAAN BIAYA BANGUN (MENENGAH)</strong></td>
+                        <td> Rp. <span id="biaya-bangun-m">0</span>,-</td>
+                    </tr>
+                    <tr style="background-color:#ace7ff">
+                        <td class="text-right"><strong>PERKIRAAN BIAYA BANGUN (MENENGAH) + DESIGN</strong></td>
+                        <td> Rp. <span id="biaya-bangun-m-design">0</span>,-</td>
+                    </tr>
+                    <tr style="background-color:#b5b9ff">
+                        <td class="text-right"><strong>PERKIRAAN BIAYA BANGUN (MEWAH)</strong></td>
+                        <td> Rp. <span id="biaya-bangun-w">0</span>,-</td>
+                    </tr>
+                    <tr style="background-color:#b5b9ff">
+                        <td class="text-right"><strong>PERKIRAAN BIAYA BANGUN (MEWAH) + DESIGN</strong></td>
+                        <td> Rp. <span id="biaya-bangun-w-design">0</span>,-</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div> 
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal-ruang" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form-ruang">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label for="nama">Nama Ruang</label>
+                        <select name="nama" class="form-control select2" id="select-nama-ruang"></select>
+                        <span class="help-block"></span>
+                    </div>
+                    <div class="form-group" id="form-group-ruang-lain" style="display: none;">
+                        <label for="nama">Ruang lain</label>
+                        <input type="text" class="form-control form-no-input-group" name="ruang-lain" placeholder="Tuliskan nama ruang lain">
+                        <span class="help-block"></span>
+                    </div>
+                    <div class="form-group" id="form-group-ruang-panjang">
+                        <label for="panjang">Panjang Ruang</label>
+                        <div class="input-group" style="max-width: 200px;">
+                            <input type="text" class="form-control form-has-input-group" name="panjang">
+                            <span class="input-group-addon">m</span>
+                        </div>
+                        <span class="help-block"></span>
+                    </div>
+                    <div class="form-group" id="form-group-ruang-lebar">
+                        <label for="lebar">Lebar Ruang</label>
+                        <div class="input-group" style="max-width: 200px;">
+                            <input type="text" class="form-control form-has-input-group" name="lebar">
+                            <span class="input-group-addon">m</span>
+                        </div>
+                        <span class="help-block"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lantai">Lantai</label>
+                        <select name="lantai" class="form-control select2" id="select-lantai" ></select>
+                        <span class="help-block"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="save_ruang();">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+
+
+
+
+
+
+/* ----------------------------------------------------------------------------*/
+/* ---------------------------------FORM RUANG --------------------------------*/
+
+
+/* -----------------------------------*/
+/* -------- GLOBAL VARIABLE ----------*/
+
+var action;
+var dataindex = 0;
+
+/* ------- END GLOBAL VARIABLE -------*/
+/* -----------------------------------*/
+
+jQuery(document).ready(function() {
+
+    for (var i = 1; i <= max_lantai; i++) {
+        jQuery('#jumlah-lantai').append('<option value="'+i+'">'+i+'</option>')
+    }
+
+    jQuery('#jumlah-lantai').change(function(event) {
+        
+        var jumlah_lantai = jQuery('#jumlah-lantai').val();
+
+        var html = '<tr id="tr-luas-ruangan">'
+                        +'<td class="text-right">PERHITUNGAN LUAS RUANGAN</td>'
+                        +'<td style="width:200px"><span id="luas-ruangan">0</span> m<sup>2</sup></td>'
+                    +'</tr>';
+
+        if(jumlah_lantai > 1)       
+        for (var i = 1; i <=jumlah_lantai; i++) {
+
+            var lantai = i == 1 ? 'DASAR' : i;
+            html += '<tr id="tr-luas-ruangan-'+i+'" class="detail-luas-ruangan">'
+                        +'<td class="text-right">LANTAI '+lantai +'</td>'
+                        +'<td style="width:200px"><span id="luas-ruangan-'+i+'">0</span> m<sup>2</sup></td>'
+                    +'</tr>';
+
+        }
+
+        jQuery('.detail-luas-ruangan').remove();
+        jQuery('#tr-luas-ruangan').replaceWith(html);
+
+        hitung_luas_ruangan();
+
+    });
+
+
+
+    jQuery('#form-ruang #select-nama-ruang').change(function(event) {
+        if(this.value == "0")
+            jQuery('#form-ruang [name="ruang-lain"]').parent().show();
+        else
+            jQuery('#form-ruang [name="ruang-lain"]').parent().hide();
+
+    });
+
+
+    //remove validation
+    jQuery('.form-has-input-group').change(function(event) {
+        jQuery(this).parent().parent().removeClass('has-error');
+        jQuery(this).parent().next().text('');
+    });
+
+    jQuery('.form-no-input-group').change(function(event) {
+        jQuery(this).parent().removeClass('has-error');
+        jQuery(this).next().text('');
+    });
+
+    jQuery("#kdb").text(persen_kdb);
+    jQuery("#sirkulasi").text(persen_sirkulasi);
+
+    jQuery('.select2').select2();
+});
+
+function add_ruang() 
+{
+    action = 'add';
+    set_dropdown_ruang();
+    set_dropdown_lantai();
+    jQuery('#form-ruang')[0].reset();
+    jQuery('#form-ruang #select-nama-ruang').change();
+    jQuery('.form-has-input-group').change();
+
+    jQuery('#form-ruang [name="lantai"]').val('1').trigger('change');
+    jQuery('#modal-ruang').modal('show');
+    setTimeout(function(){
+        jQuery('.modal-backdrop.fade.in').remove();
+    }, 400);
+    jQuery('.modal-title').text('Tambah Ruang');
+}
+
+function edit_ruang(id)
+{
+    action = 'edit';
+
+    var nama = jQuery('[data-index="'+id+'"] .data-ruang-nama').text();
+    var lantai = jQuery('[data-index="'+id+'"] .data-ruang-lantai').text();
+    var panjang = jQuery('[data-index="'+id+'"] .data-ruang-panjang').text();
+    var lebar = jQuery('[data-index="'+id+'"] .data-ruang-lebar').text();
+    var islain = jQuery('[data-index="'+id+'"] .data-ruang-nama').attr('data-is-lain');
+
+    lantai = lantai == 'Dasar' ? '1' : lantai;
+
+    set_dropdown_ruang(nama);
+    set_dropdown_lantai();
+    jQuery('#form-ruang')[0].reset();
+    jQuery('.form-has-input-group').change();
+
+    if(islain == '1')
+    {
+        ruanglain = nama;
+        nama = '0';
+        jQuery('#form-ruang [name="ruang-lain"]').val(ruanglain);
+
+    }
+
+    jQuery('#form-ruang [name="id"]').val(id);
+    jQuery('#form-ruang [name="nama"]').val(nama);
+    jQuery('#form-ruang [name="nama"]').change();
+    jQuery('#form-ruang [name="lantai"]').val(lantai).trigger('change');
+    jQuery('#form-ruang [name="panjang"]').val(panjang);
+    jQuery('#form-ruang [name="lebar"]').val(lebar);
+
+    jQuery('#modal-ruang').modal('show');
+    setTimeout(function(){
+        jQuery('.modal-backdrop.fade.in').remove();
+    }, 400);
+    jQuery('.modal-title').text('Edit Ruang');
+
+
+}
+
+function save_ruang()
+{
+
+    var nama = jQuery('#form-ruang [name="nama"]').val();
+    var lantai = jQuery('#form-ruang [name="lantai"]').val();
+    var panjang = jQuery('#form-ruang [name="panjang"]').val();
+    var lebar = jQuery('#form-ruang [name="lebar"]').val();
+    
+    var lain = jQuery('#form-ruang [name="ruang-lain"]').val();
+
+
+    var is_kamar = (nama.toLowerCase().includes("kamar tidur")
+                   || nama.toLowerCase().includes("kamar pembantu"));
+                   
+    var is_kmd = nama.toLowerCase().includes("mandi dalam");
+    var is_mandi = nama.toLowerCase().includes("kamar mandi");
+
+    //VALIDASI FORM
+    is_valid = true;
+    
+    if(panjang == '')
+    {
+        jQuery('#form-group-ruang-panjang').addClass('has-error');
+        jQuery('#form-group-ruang-panjang .help-block').text('Form ini harap diisi');
+        is_valid = false;
+    }
+    else if(isNaN(panjang))
+    {
+        jQuery('#form-group-ruang-panjang').addClass('has-error');
+        jQuery('#form-group-ruang-panjang .help-block').text('Harap diisi dengan angka yang valid');
+        is_valid = false;
+    }else if(is_kamar && parseFloat(panjang) < 2.8)
+    {
+        jQuery('#form-group-ruang-panjang').addClass('has-error');
+        jQuery('#form-group-ruang-panjang .help-block').text('Minimal panjang kamar 2.8 meter');
+        is_valid = false;
+    }else if(is_kmd && parseFloat(panjang*lebar) < 20)
+    {
+        jQuery('#form-group-ruang-panjang').addClass('has-error');
+        jQuery('#form-group-ruang-panjang .help-block').html('Minimal luas 20 m<sup>2</sup>');
+        is_valid = false;
+    }else if(is_mandi && parseFloat(panjang) < 1.5)
+    {
+        jQuery('#form-group-ruang-panjang').addClass('has-error');
+        jQuery('#form-group-ruang-panjang .help-block').text('Minimal panjang kamar mandi 1.5 meter');
+        is_valid = false;
+    }
+
+    if(lebar == '')
+    {
+        jQuery('#form-group-ruang-lebar').addClass('has-error');
+        jQuery('#form-group-ruang-lebar .help-block').text('Form ini harap diisi');
+        is_valid = false;
+    }else if(isNaN(lebar))
+    {
+        jQuery('#form-group-ruang-lebar').addClass('has-error');
+        jQuery('#form-group-ruang-lebar .help-block').text('Harap diisi dengan angka yang valid');
+        is_valid = false;
+    }else if(is_kamar && parseFloat(lebar) < 2.8)
+    {
+        jQuery('#form-group-ruang-lebar').addClass('has-error');
+        jQuery('#form-group-ruang-lebar .help-block').text('Minimal lebar kamar 2.8 meter');
+        is_valid = false;
+    }else if(is_kmd && parseFloat(panjang*lebar) < 20)
+    {
+        jQuery('#form-group-ruang-lebar').addClass('has-error');
+        jQuery('#form-group-ruang-lebar .help-block').html('Minimal luas 20 m<sup>2</sup>');
+        is_valid = false;
+    }else if(is_mandi && parseFloat(panjang) < 1.5)
+    {
+        jQuery('#form-group-ruang-lebar').addClass('has-error');
+        jQuery('#form-group-ruang-lebar .help-block').text('Minimal lebar kamar mandi 1.5 meter');
+        is_valid = false;
+    }
+
+
+    if(nama == '0' && lain == '')
+    {
+        jQuery('#form-group-ruang-lain').addClass('has-error');
+        jQuery('#form-group-ruang-lain .help-block').text('Form ini harap diisi');
+        is_valid = false;
+    }
+
+
+    if(! is_valid) return;
+
+
+
+    if(nama == '0')
+    {
+        nama = lain;
+        lain = 1;
+    }else
+        lain = 0;
+
+    jQuery('#no-data-ruangan').hide(); 
+    
+    if(action == 'add')
+        jQuery('#table-simulasi tbody').append(data_ruang(null, nama, lantai, panjang, lebar, lain));
+    else if(action == 'edit'){
+
+        var id = jQuery('#form-ruang [name="id"]').val();
+        jQuery('#table-simulasi tbody [data-index="'+id+'"]').replaceWith(data_ruang(id, nama, lantai, panjang, lebar, lain));
+    }
+
+    jQuery('#modal-ruang').modal('hide');
+    hitung_luas_ruangan();
+
+}
+
+function delete_ruang(id)
+{
+    var nama = jQuery('[data-index="'+id+'"] .data-ruang-nama').text();
+
+    if(confirm('Hapus '+nama+'?'))
+    {
+        jQuery('[data-index="'+id+'"]').remove();
+
+        if(jQuery('.data-ruang').length == 0)
+            jQuery('#no-data-ruangan').show(); 
+    }
+    hitung_luas_ruangan();
+}
+function set_dropdown_ruang(ruang_except = '')
+{
+    jQuery('#form-ruang #select-nama-ruang').empty();
+    jQuery.each(listruang, function(index, ruang) {
+
+        var skip = false;
+        jQuery('.data-ruang-nama').each(function(index, e) {
+            if(jQuery(e).text() == ruang)
+                skip = true;
+            if(ruang_except == ruang)
+                skip = false;
+        });
+
+        if(skip) return;
+        jQuery('#form-ruang #select-nama-ruang').append('<option value="'+ruang+'">'+ruang+'</option>')
+    });
+
+    jQuery('#form-ruang #select-nama-ruang').append('<option value="0">Ruang lain</option>')
+
+}
+
+function set_dropdown_lantai()
+{
+    jQuery('#form-ruang #select-lantai').empty();
+
+    var jumlah_lantai = jQuery('#jumlah-lantai').val();
+    jQuery('#form-ruang #select-lantai').append('<option value="1">Lantai Dasar</option>')
+
+    for (var lantai = 2; lantai <= jumlah_lantai; lantai++) {
+        jQuery('#form-ruang #select-lantai').append('<option value="'+lantai+'"> Lantai '+lantai+'</option>')
+    }
+}
+
+
+function data_ruang(id, nama, lantai, p, l, lain)
+{
+    if(id == null){
+        dataindex++;
+        id = dataindex;
+    }
+
+    if(lantai == '1') lantai = 'Dasar';
+    luas = p*l;
+    return '<tr class="data-ruang" data-index="'+id+'">'
+                +'<td><strong class="data-ruang-nama" data-is-lain="'+lain+'">'+nama+'</strong></td>'
+                +'<td>Lantai <span class="data-ruang-lantai">'+lantai+'</span></td>'
+                +'<td><span class="data-ruang-panjang">'+p+'</span> x <span class="data-ruang-lebar">'+l+'</span> m</td>'
+                +'<td><span class="data-ruang-luas">'+luas+'</span> m<sup>2</sup></td>'
+                +'<td>'
+                    +'<button type="button" class="btn btn-primary btn-xs" onclick="edit_ruang('+id+')">'
+                        +'<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> <span class="hidden-sm hidden-xs">Edit</span>'
+                    +'</button> '
+                    +'<button type="button" class="btn btn-danger btn-xs" onclick="delete_ruang('+id+')">'
+                        +'<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> <span class="hidden-sm hidden-xs">Hapus</span>'
+                    +'</button>'
+                +'</td>'
+            +'</tr>';
+}
+
+
+/* ----------------------------------------------------------------------------*/
+/* -----------------------------END FORM RUANG --------------------------------*/
+
+
+
+
+/* -------------------------------------------------------------------------------------*/
+/* ------Kalkulasi Luas Tanah dan Luas bangunan maksimum lantai dasar (KDB) ------------*/
+
+function hitung_luas_tanah() 
+{
+    var p = document.getElementById('panjang-tanah').value;
+    var l = document.getElementById('lebar-tanah').value;
+
+
+    var luas   = parseFloat(p*1) * parseFloat(l*1) ;
+    var luas_max = parseFloat(luas)*persen_kdb/100 ;
+
+    if (!isNaN(luas_max)) {
+        document.getElementById('luas-max').innerHTML = luas_max;
+    }
+
+    if (!isNaN(luas)) {
+        document.getElementById('luas-tanah').innerHTML = luas;
+    }
+
+    validation_hitung();
+}
+
+
+/* -----END Kalkulasi Luas Tanah dan Luas bangunan maksimum lantai dasar (KDB) ---------*/
+/* -------------------------------------------------------------------------------------*/
+
+
+
+/* --------------------------------------------------------------------------------*/
+/* ------------------------------KALKULASI LUAS BANGUNAN --------------------------*/
+
+function hitung_luas_ruangan()
+{
+    var jumlah_lantai = jQuery('#jumlah-lantai').val();
+
+    const alltotal = [];
+    jQuery('.data-ruang').each(function(index, e) {
+        
+        var p = jQuery(".data-ruang-panjang" ,e).text();
+        var l = jQuery(".data-ruang-lebar" ,e).text();
+        var lantai = jQuery(".data-ruang-lantai" ,e).text();
+        
+        if(lantai == 'Dasar') lantai = '1';
+
+        var luas = p*l;
+
+        if (! alltotal.hasOwnProperty(lantai)) {
+            alltotal[lantai] = 0;
+        }
+        alltotal[lantai] += luas;
+
+    });
+
+    var max_total_luas = 0;
+    jQuery.each(alltotal, function(lantai, total) {
+        
+        if(total >= max_total_luas) max_total_luas = total;
+
+        jQuery('#luas-ruangan-'+lantai).text(total);
+
+    });
+
+    var sirkulasi = max_total_luas* persen_sirkulasi/100;
+    var luas_total = max_total_luas+sirkulasi;
+
+    jQuery('#luas-sirkulasi').text(sirkulasi);
+
+
+    jQuery('#luas-ruangan').text(max_total_luas);
+    jQuery('.luas-total').text(luas_total);
+
+
+    var biaya_desain = parseInt(luas_total* biaya_desain_permeter * 1000);
+    var biaya_bangun_s = parseInt(luas_total* biaya_bangun_s_permeter * 1000);
+    var biaya_bangun_m = parseInt(luas_total* biaya_bangun_m_permeter * 1000);
+    var biaya_bangun_w = parseInt(luas_total* biaya_bangun_w_permeter * 1000);
+
+    if(biaya_desain < biaya_desain_minim*1000)
+        biaya_desain = parseInt(biaya_desain_minim*1000);
+
+    jQuery('#biaya-design').text(biaya_desain.toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+    jQuery('#biaya-bangun-s').text(biaya_bangun_s.toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+    jQuery('#biaya-bangun-m').text(biaya_bangun_m.toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+    jQuery('#biaya-bangun-w').text(biaya_bangun_w.toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+
+    jQuery('#biaya-bangun-s-design').text((biaya_bangun_s+biaya_desain).toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+    jQuery('#biaya-bangun-m-design').text((biaya_bangun_m+biaya_desain).toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+    jQuery('#biaya-bangun-w-design').text((biaya_bangun_w+biaya_desain).toString().replace(/(.)(?=(\d{3})+$)/g,'$1.'));
+
+    validation_hitung();
+    
+}
+
+function validation_hitung()
+{
+    jQuery('#alert-error').hide();
+    var luas_max = parseFloat(jQuery('#luas-max').text());
+    var luas_total = parseFloat(jQuery('.luas-total:first').text());
+
+    console.log(luas_total);
+    console.log(luas_max);
+    if(luas_total > luas_max)
+        show_error('<strong>PERHITUNGAN LUAS RUANGAN</strong> lebih besar dari pada <strong>TOTAL LUAS BANGUNAN REKOMENDASI</strong>');
+    
+}
+
+
+/* --------------------------------------------------------------------------------*/
+/* ------------------------------KALKULASI END BANGUNAN ---------------------------*/
+
+
+
+//error
+function show_error(message)
+{
+    jQuery('#alert-error').show();
+    jQuery('#error-message').html(message);
+}
+</script>
+
+
+</div><!-- end of content -->
+</article>
+            
+            </main><!-- #main -->
+        </div><!-- #primary -->
+    </div>
+</div>
